@@ -59,3 +59,33 @@ Three output files will be generated:
 The latter two are lists of found genes, with the best match for each gene. `best_matching_gene_any_cf.tsv` lists the best matching genes regardless of whether they belong to the same CF/cluster or not. `classifications_by_gene_min_classify_score_fraction_*.tsv` is nearly the same, but gives preference to genes in the CF/cluster that matches the gene cluster best, provided that they have a score fraction of at least `cf_classify_min_score_fraction` (otherwise the best match regardless of CF is listed). This is done to avoid situations where very similar genes are misclassified as belonging to a different CF, when they're an almost equally good match for the CF that the rest of the genes match.
 
 
+### Column explanations for the two gene level files
+
+- `seqnames`: Sequentially numbered contig name.
+- `start` and `end`: 1-based start and end positions.
+- `strand`: The strand the gene is on.
+- `operon_strand`: The strand that most genes in a cluster are on.
+- `genome_id`: Genome name taken from the contigs fasta file.
+- `operon_id`: Name given to the an identified cluster of genes, based on the contig and then sequentially numbered to distinguish between multiple clusters.
+- `my_cds_id`: CDS identifier taken from the gff3 file.
+- `gene`: Best matching gene (either with preference for the same CF as other genes in the cluster or not, see above).
+- `cf`: CF that `gene` belongs to.
+- `best_operon_cf_match`: The best matching CF for the cluster of genes taken together.
+- `score`: Alignment score from aligning CDS encoded protein to protein in reference database.
+- `max_score`: Alignment score from aligning CDS encoded protein to itself.
+- `score_fraction`: `score` / `max_score` fraction.
+- `pid`: PID calculated as (identical positions) / (aligned positions + internal gap positions).
+- `gene_order`: Order index of the gene in the identified cluster.
+
+### Additional column explanations for the gene cluster level file
+
+- `cf_classification`: Overall classification of the identified cluster of genes. Can be a mix of different CFs or contain "Unknown" if there isn't a sufficiently good match for the best matching operon.
+- `gene_profile`: String with the genes from `classifications_by_gene_min_classify_score_fraction_*.tsv` concatenated in order, but with "Unknown" listed for genes under the score threshold.
+- `mean_score_fraction`: The mean of the score fractions (see above) for each of the genes in the cluster, including those listed as "Unknown".
+- `best_operon_cf_match_mean_score_fraction`: Same as `mean_score_fraction`, but taking the best matching genes only from the CF that matches the cluster best as a whole.
+- `operon_gene_count`: The number of genes in the identified cluster.
+- `best_operon_cf_match_gene_count`: The number of genes in the cluster that match a gene in `best_operon_cf_match`.
+- `req_gene_count_in_cf_rules`: The number of genes that are listed as required in `cf_rules`. Please note that direct comparisons with `best_operon_cf_match_gene_count` may be misleading, as the latter includes non-required genes.
+- `best_operon_cf_match_all_genes_present`: Whether all of the required genes in `cf_rules` for `best_operon_cf_match` have a match in the cluster of genes.
+- `best_operon_cf_match_genes_in_order`: Whether the genes are in the right order compared to `cf_rules`, with no other genes in between.
+- `best_operon_cf_match_all_genes_and_ordered`: Whether both of the previous two conditions are met.
