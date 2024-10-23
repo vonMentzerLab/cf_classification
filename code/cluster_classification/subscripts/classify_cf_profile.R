@@ -311,6 +311,7 @@ df_cf_gene_count <- df_max_per_cf %>%
   best_matching_gene_any_cf <- cf_score_df %>%
     group_by(operon_id, gene_order) %>%
     slice_max(score_fraction, with_ties = FALSE) %>% 
+    ungroup() %>% 
     select(seqnames, start, end, strand , genome_id, operon_id, operon_strand, my_cds_id, cf, gene, score_fraction, score, max_score, pid, gene_order)
 
   ##################
