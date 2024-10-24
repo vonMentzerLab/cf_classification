@@ -4,14 +4,14 @@
 cds_features_dir: demo/genomes/cds_features/
 
 # Directory where intermediate results (Diamond hits, alignment scores etc) are stored
-gene_search_dir: output/cf_and_kappa/tmp/
+gene_search_dir: demo/output/cf_and_kappa/tmp/
 
 # nucleotide and amino acid sequence fasta files for the clustered gene database
-clustered_genes_reference_db_nucl_seq: demo/baktamod_CFs_and_kappa_reference_db.fasta
-clustered_genes_reference_db_aa_seq: demo/baktamod_CFs_and_kappa_reference_db_translated.fasta
+clustered_genes_reference_db_nucl_seq: demo/references/baktamod_CFs_and_kappa_reference_db.fasta
+clustered_genes_reference_db_aa_seq: demo/references/baktamod_CFs_and_kappa_reference_db_translated.fasta
 
-cf_names: demo/cf_and_kappa_name_lookup.tsv
-cf_rules: demo/cf_and_kappa_rules.tsv
+cf_names: demo/references/cf_and_kappa_name_lookup.tsv
+cf_rules: demo/references/cf_and_kappa_rules.tsv
 
 min_cov: 80 # Minimum coverage accepted for a Diamond hit to be considered probable clustered gene database hit
 min_pident: 80 # Minimum percent identity accepted for a Diamond hit to be considered probable clustered gene database hit
@@ -19,4 +19,9 @@ max_dist: 10000 # Maximum distance between probable genes from clustered gene da
 cf_classify_min_score_fraction: 0.95 # Minimum alignment score fraction for a gene to be classified as a gene from the clustered gene database, rather than "Unknown"
 
 # Directory to save result files in
-out_dir: output/cf_and_kappa/cf_classification/
+out_dir: demo/output/cf_and_kappa/cf_classification/
+
+# Save nucleotide sequences of found operons/genes?
+contig_dir: demo/genomes/contigs/ # Directory of genome sequence files required if extracting operons/genes
+output_gene_seqs: TRUE
+output_operon_seqs: TRUE
