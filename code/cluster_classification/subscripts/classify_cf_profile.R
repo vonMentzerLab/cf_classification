@@ -302,6 +302,13 @@ df_cf_gene_count <- df_max_per_cf %>%
       classifications_by_gene <- hybrid_cf_genes %>% 
         select(seqnames, start, end, strand, genome_id, operon_id, operon_strand, my_cds_id, best_operon_cf_match, cf, gene, score_fraction, score, max_score, pid, gene_order)
 
+      operon_coords <- classifications_by_gene %>% 
+        select(-strand) %>% 
+        group_by(genome_id, operon_id, seqnames, strand = operon_strand) %>% 
+        summarise(start = min(start), end = max(end), .groups = 'drop')
+
+      cf_classification <- cf_classification %>% left_join(operon_coords, by = c('genome_id', 'operon_id'))
+
   } else {
     cf_classification <- tibble()
     classifications_by_gene <- tibble()
@@ -484,8 +491,7 @@ if(config$output_gene_seqs || config$output_operon_seqs){
     system(paste('mkdir -p', operon_seq_out_dir))
     operons.df <- results$classifications_by_gene %>%
       group_by(seqnames, strand = operon_strand, genome_id, operon_id, best_operon_cf_match) %>% 
-      summarise(start = min(start), end = max(end)) %>% 
-      ungroup()
+      summarise(start = min(start), end = max(end), .groups = 'drop')
     genome_ids <- results$classifications_by_gene$genome_id %>% unique()
     for(genome_id in genome_ids){
       gr_tmp <- operons.df %>% filter(genome_id == !!genome_id) %>% as_granges() # Filter before converting to get correct seqlevels
