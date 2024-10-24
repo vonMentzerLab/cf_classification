@@ -48,6 +48,12 @@ Fasta files of the gene sequences to search for need to be available as both nuc
 
 `out_dir`: Directory to save output files to.
 
+`contig_dir`: Directory with genome sequence files. Required if outputting operon/gene sequences (see below).
+
+`output_gene_seqs`: Boolean - write found genes to fasta files?
+
+`output_operon_seqs`: Boolean - write found operons to fasta files?
+
 ## Output
 
 Three output files will be generated:
