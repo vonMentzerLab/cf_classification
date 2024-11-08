@@ -3,6 +3,7 @@ library(plyranges)
 library(BSgenome)
 library(foreach)
 library(doParallel)
+library(yaml)
 
 load_fa_seqs <- function(fa_file){
   Biostrings::getSeq(Rsamtools::FaFile(fa_file))
@@ -14,16 +15,15 @@ make_bakta_contignames <- function(dnastringset){
 }
 
 args <- commandArgs(trailingOnly = TRUE)
-in_dir <- args[1]
-out_dir <- args[2]
+config <- read_yaml(args[1])
 
-nucl_dir <- paste0(out_dir, '/cds_nucl_seqs/')
-prot_dir <- paste0(out_dir, '/cds_amino_seqs/')
-cds_coords_dir <- paste0(out_dir, '/cds_coords/')
+nucl_dir <- paste0(config$cds_features_dir, '/cds_nucl_seqs/')
+prot_dir <- paste0(config$cds_features_dir, '/cds_amino_seqs/')
+cds_coords_dir <- paste0(config$cds_features_dir, '/cds_coords/')
 
 system(paste('mkdir -p', nucl_dir, prot_dir, cds_coords_dir))
 
-genome_ids <- tibble(file = list.files(in_dir)) %>% 
+genome_ids <- tibble(file = list.files(config$genome_seqs_dir)) %>% 
   filter(str_detect(file, '.gff3')) %>% 
   mutate(genome_id = str_replace(file, config$gff3_suffix, '')) %>% 
   pull(genome_id) %>% 
@@ -42,7 +42,7 @@ silly_null <- foreach(
   .packages = c('tidyverse', 'plyranges', 'BSgenome')) %dopar% {
 
   # Get Bakta CDS features
-  cds <- import.gff3(paste0(in_dir, '/', genome_id, config$gff3_suffix)) %>% 
+  cds <- import.gff3(paste0(config$genome_seqs_dir, '/', genome_id, config$gff3_suffix)) %>% 
     filter(type == 'CDS') %>% 
     select(phase, ID) %>% 
     mutate(genome_id = genome_id, my_cds_id = paste0(genome_id, '.', ID))
@@ -55,7 +55,7 @@ silly_null <- foreach(
       mutate(width = width - phase)
   }
 
-  contig_seqs <- load_fa_seqs(paste0(in_dir, '/', genome_id, config$fa_suffix)) %>% make_bakta_contignames()
+  contig_seqs <- load_fa_seqs(paste0(config$genome_seqs_dir, '/', genome_id, config$fa_suffix)) %>% make_bakta_contignames()
 
   bacterial_gen_code <- getGeneticCode('11')
   nucl_seqs <- BSgenome::getSeq(contig_seqs, cds)
