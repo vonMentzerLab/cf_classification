@@ -21,14 +21,11 @@ nucl_dir <- paste0(out_dir, '/cds_nucl_seqs/')
 prot_dir <- paste0(out_dir, '/cds_amino_seqs/')
 cds_coords_dir <- paste0(out_dir, '/cds_coords/')
 
-gff3_suffix <- '.contigs.fa.gff3' # Everything after genome ID
-fa_suffix <- '.contigs.fa.gz'
-
 system(paste('mkdir -p', nucl_dir, prot_dir, cds_coords_dir))
 
 genome_ids <- tibble(file = list.files(in_dir)) %>% 
   filter(str_detect(file, '.gff3')) %>% 
-  mutate(genome_id = str_replace(file, gff3_suffix, '')) %>% 
+  mutate(genome_id = str_replace(file, config$gff3_suffix, '')) %>% 
   pull(genome_id) %>% 
   unique()
 
@@ -45,7 +42,7 @@ silly_null <- foreach(
   .packages = c('tidyverse', 'plyranges', 'BSgenome')) %dopar% {
 
   # Get Bakta CDS features
-  cds <- import.gff3(paste0(in_dir, '/', genome_id, gff3_suffix)) %>% 
+  cds <- import.gff3(paste0(in_dir, '/', genome_id, config$gff3_suffix)) %>% 
     filter(type == 'CDS') %>% 
     select(phase, ID) %>% 
     mutate(genome_id = genome_id, my_cds_id = paste0(genome_id, '.', ID))
@@ -58,7 +55,7 @@ silly_null <- foreach(
       mutate(width = width - phase)
   }
 
-  contig_seqs <- load_fa_seqs(paste0(in_dir, '/', genome_id, fa_suffix)) %>% make_bakta_contignames()
+  contig_seqs <- load_fa_seqs(paste0(in_dir, '/', genome_id, config$fa_suffix)) %>% make_bakta_contignames()
 
   bacterial_gen_code <- getGeneticCode('11')
   nucl_seqs <- BSgenome::getSeq(contig_seqs, cds)

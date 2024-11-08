@@ -3,6 +3,10 @@
 # Directory with output from get_bakta_cds_defs_and_seqs.R
 cds_features_dir: demo/genomes/cds_features/
 
+# Suffix for genome files. Everything before this will be used as genome_id.
+fa_suffix: .fa.gz
+gff3_suffix: .fa.gff3
+
 # Directory where intermediate results (Diamond hits, alignment scores etc) are stored
 gene_search_dir: demo/output/cf_and_kappa/tmp/
 
