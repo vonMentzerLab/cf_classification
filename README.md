@@ -10,11 +10,11 @@ The pipeline requires gff3 files to extract CDS locations from. This has current
 
 
 1. Annotate contigs with Bakta. Either use `bakta_annotation.sh` directly, or look at its contents and adapt.
-    Usage: `bakta_annotation.sh directory_with_contig_fasta_files bakta_database`
+    Usage: `bakta_annotation.sh directory_with_contig_fasta_files bakta_database cores`
     Note that a bakta database has to be generated if this has not already been done. Please see Bakta's documentation.
 
 2. Run `get_bakta_cds_defs_and_seqs.R` to extract CDS locations as well as nucleotide and amino acid sequences.
-    Usage: `get_bakta_cds_defs_and_seqs.R dir_with_gff3_files dir_to_save_coords_in`
+    Usage: `get_bakta_cds_defs_and_seqs.R config.yaml`. Please see config description below.
 
 
 The CDS extraction steps have to be performed once per set of genomes, but do not have to be repeated when searching the same genome dataset for different groups of genes with the pipeline.
@@ -25,7 +25,11 @@ The CDS extraction steps have to be performed once per set of genomes, but do no
 
 Pipeline parameters are defined in `config.yaml`. Please see the example config file in addition to the following explanation.
 
+`genome_seqs_dir`: Input directory with contig and feature files
+
 `cds_features_dir`: The output directory of `get_bakta_cds_defs_and_seqs.R`
+
+`fa_suffix` & `gff3_suffix`: Suffices for files (.e.g., `.fa.gz` and `.fa.gff3`). Everything before this will be used as genome_id.
 
 `gene_search_dir`: Directory where Diamond alignments and other intermediary files will be stored.
 
@@ -46,9 +50,9 @@ Fasta files of the gene sequences to search for need to be available as both nuc
 
 `cf_classify_min_score_fraction`: Minimum alignment score fraction for a gene to be classified as a gene from the clustered gene database, rather than "Unknown".
 
-`out_dir`: Directory to save output files to.
+`cores`: Number of cores to use in parallelised steps.
 
-`contig_dir`: Directory with genome sequence files. Required if outputting operon/gene sequences (see below).
+`out_dir`: Directory to save output files to.
 
 `output_gene_seqs`: Boolean - write found genes to fasta files?
 

@@ -1,7 +1,7 @@
 # These paths are relative to the base directory of the project, and assume scripts are being run from there. Please change as necessary.
 
 # Directory with genome sequence and .gff3 files - used for get_bakta_cds_defs_and_seqs.R and if extracting operon/gene seqs (see below)
-genome_seqs_dir: demo/genome/genome_seqs/
+genome_seqs_dir: demo/genomes/contigs/
 
 # Directory with output from get_bakta_cds_defs_and_seqs.R
 cds_features_dir: demo/genomes/cds_features/
@@ -24,6 +24,7 @@ min_cov: 80 # Minimum coverage accepted for a Diamond hit to be considered proba
 min_pident: 80 # Minimum percent identity accepted for a Diamond hit to be considered probable clustered gene database hit
 max_dist: 10000 # Maximum distance between probable genes from clustered gene database to be considered part of the same cluster. Also maximum distance either side of a cluster to save cds coords for - this should be a separate parameter, but doesn't affect pipeline end result output.
 cf_classify_min_score_fraction: 0.95 # Minimum alignment score fraction for a gene to be classified as a gene from the clustered gene database, rather than "Unknown"
+cores: 10 # Number of cores to use for parallelised steps
 
 # Directory to save result files in
 out_dir: demo/output/cf_and_kappa/cf_classification/
