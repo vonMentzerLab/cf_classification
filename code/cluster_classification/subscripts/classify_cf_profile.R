@@ -401,7 +401,7 @@ plot_from_genome_id <- function(genome_id, min_score_fraction){
 args <- commandArgs(trailingOnly = TRUE)
 config <- read_yaml(args[1])
 
-config$cf_filtered_cds_coords_dir <- paste0(config$gene_search_dir, '/cds_coords/')
+config$cf_filtered_cds_coords_dir <- paste0(config$gene_search_dir, '/cf_cds_coords/')
 config$global_alignment_scores_dir  <- paste0(config$gene_search_dir, '/cds_global_alignment_scores/')
 
 cf_names <- read_tsv(config$cf_names)
@@ -422,7 +422,7 @@ comb <- function(x, y){
   )
 }
 
-cores  <- 30 # Crashes when asking for 50 for some reason. Cores vs threads maybe?
+cores  <- config$cores
 cl <- makeCluster(cores)
 registerDoParallel(cl)
 
@@ -482,7 +482,7 @@ if(config$output_gene_seqs || config$output_operon_seqs){
       contig_seqs <- load_fa_seqs(paste0(config$genome_seqs_dir, '/', genome_id, config$fa_suffix)) %>% make_bakta_contignames()
       nucl_seqs <- BSgenome::getSeq(contig_seqs, gr_tmp)
       names(nucl_seqs) <- paste0(gr_tmp$operon_id, ',', gr_tmp$my_cds_id, ',', gr_tmp$best_operon_cf_match, ',', gr_tmp$gene)
-      nucl_seqs %>% writeXStringSet(paste0(gene_seq_out_dir, genome_id, 'fa.gz'), compress= TRUE)
+      nucl_seqs %>% writeXStringSet(paste0(gene_seq_out_dir, genome_id, '.fa.gz'), compress= TRUE)
     }
   }
   if(config$output_operon_seqs){
@@ -497,7 +497,7 @@ if(config$output_gene_seqs || config$output_operon_seqs){
       contig_seqs <- load_fa_seqs(paste0(config$genome_seqs_dir, '/', genome_id, config$fa_suffix)) %>% make_bakta_contignames()
       nucl_seqs <- BSgenome::getSeq(contig_seqs, gr_tmp)
       names(nucl_seqs) <- paste0(gr_tmp$operon_id, ',', gr_tmp$best_operon_cf_match)
-      nucl_seqs %>% writeXStringSet(paste0(operon_seq_out_dir, genome_id, 'fa.gz'), compress= TRUE)
+      nucl_seqs %>% writeXStringSet(paste0(operon_seq_out_dir, genome_id, '.fa.gz'), compress= TRUE)
     }
   }
 }

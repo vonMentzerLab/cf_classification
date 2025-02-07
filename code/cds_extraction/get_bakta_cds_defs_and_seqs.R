@@ -31,7 +31,7 @@ genome_ids <- tibble(file = list.files(config$genome_seqs_dir)) %>%
 
 
 
-cores  <- 30
+cores  <- config$cores
 cl <- makeCluster(cores)
 registerDoParallel(cl)
 

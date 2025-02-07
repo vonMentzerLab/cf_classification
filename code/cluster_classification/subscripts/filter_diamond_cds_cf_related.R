@@ -37,7 +37,7 @@ args <- commandArgs(trailingOnly = TRUE)
 config <- read_yaml(args[1])
 
 config$diamond_prot_dir <- paste0(config$gene_search_dir, '/diamond_aligned_amino_cf_db/')
-config$cf_filtered_cds_coords_dir  <- paste0(config$gene_search_dir, '/cds_coords/')
+config$cf_filtered_cds_coords_dir  <- paste0(config$gene_search_dir, '/cf_cds_coords/')
 config$global_alignment_scores_dir  <- paste0(config$gene_search_dir, '/cds_global_alignment_scores/')
 
 config$cds_coords_dir <- paste0(config$cds_features_dir, '/cds_coords/')
@@ -52,7 +52,7 @@ CF_reference_aa_seqs <- load_fa_seqs(config$clustered_genes_reference_db_nucl_se
 
 
 
-cores = 30
+cores <- config$cores
 cl <- makeCluster(cores)
 registerDoParallel(cl)
 silence <- foreach(file = files, .packages = c('tidyverse', 'Biostrings')) %dopar% {
