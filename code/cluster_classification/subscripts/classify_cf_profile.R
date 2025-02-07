@@ -477,12 +477,13 @@ if(config$output_gene_seqs || config$output_operon_seqs){
     gene_seq_out_dir <- paste0(config$out_dir, '/seqs/genes/')
     system(paste('mkdir -p', gene_seq_out_dir))
     genome_ids <- results$classifications_by_gene$genome_id %>% unique()
-    for(genome_id in genome_ids){
+    silence <- foreach(genome_id = genome_ids, .packages = c('tidyverse', 'plyranges', 'BSgenome')) %dopar% {
       gr_tmp <- results$classifications_by_gene %>% filter(genome_id == !!genome_id) %>% as_granges() # Filter before converting to get correct seqlevels
       contig_seqs <- load_fa_seqs(paste0(config$genome_seqs_dir, '/', genome_id, config$fa_suffix)) %>% make_bakta_contignames()
       nucl_seqs <- BSgenome::getSeq(contig_seqs, gr_tmp)
       names(nucl_seqs) <- paste0(gr_tmp$operon_id, ',', gr_tmp$my_cds_id, ',', gr_tmp$best_operon_cf_match, ',', gr_tmp$gene)
       nucl_seqs %>% writeXStringSet(paste0(gene_seq_out_dir, genome_id, '.fa.gz'), compress= TRUE)
+      NULL
     }
   }
   if(config$output_operon_seqs){
@@ -492,12 +493,13 @@ if(config$output_gene_seqs || config$output_operon_seqs){
       group_by(seqnames, strand = operon_strand, genome_id, operon_id, best_operon_cf_match) %>% 
       summarise(start = min(start), end = max(end), .groups = 'drop')
     genome_ids <- results$classifications_by_gene$genome_id %>% unique()
-    for(genome_id in genome_ids){
+    silence <- foreach(genome_id = genome_ids, .packages = c('tidyverse', 'plyranges', 'BSgenome')) %dopar% {
       gr_tmp <- operons.df %>% filter(genome_id == !!genome_id) %>% as_granges() # Filter before converting to get correct seqlevels
       contig_seqs <- load_fa_seqs(paste0(config$genome_seqs_dir, '/', genome_id, config$fa_suffix)) %>% make_bakta_contignames()
       nucl_seqs <- BSgenome::getSeq(contig_seqs, gr_tmp)
       names(nucl_seqs) <- paste0(gr_tmp$operon_id, ',', gr_tmp$best_operon_cf_match)
       nucl_seqs %>% writeXStringSet(paste0(operon_seq_out_dir, genome_id, '.fa.gz'), compress= TRUE)
+      NULL
     }
   }
 }
