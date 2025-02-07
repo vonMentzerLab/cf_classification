@@ -21,6 +21,7 @@ cds_features_dir=$(cat "$1" | shyaml get-value cds_features_dir)
 cds_amino_seqs_dir="$cds_features_dir"/cds_amino_seqs/
 gene_search_dir=$(cat "$1" | shyaml get-value gene_search_dir)
 diamond_out_dir="$gene_search_dir"/diamond_aligned_amino_cf_db/
+cores=$(cat "$1" | shyaml get-value cores)
 
 
 # echo "$gene_search_dir"
@@ -30,7 +31,7 @@ diamond_out_dir="$gene_search_dir"/diamond_aligned_amino_cf_db/
 
 # Parts that vary based on ref db
 # conda activate adhesins_661k
-"$SCRIPT_DIR"/subscripts/parallel_diamond_cds_amino_cf_ref.sh "$clustered_genes_reference_db_aa_seq" "$cds_amino_seqs_dir" "$diamond_out_dir"
+"$SCRIPT_DIR"/subscripts/parallel_diamond_cds_amino_cf_ref.sh "$clustered_genes_reference_db_aa_seq" "$cds_amino_seqs_dir" "$diamond_out_dir" "$cores"
 
 
 # Filter diamond
