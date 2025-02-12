@@ -4,6 +4,10 @@ The required packages are detailed in two conda environment yaml files in the `e
 
 The `bakta` environment is meant for the `bakta_annotation.sh` script. All other scripts should be run in the `cluster_classification` environment.
 
+## Demo
+
+To run the demo, follow the instructions for a normal run below, optionally skipping Bakta annotation, as that has already been done for the demo genome. Scripts need to be run from the repository's base directory (not from `demo`) for the paths in the demo config (`demo/find_gene_clusters.yaml`) to be correct.
+
 ## CDS extraction
 
 The pipeline requires gff3 files to extract CDS locations from. This has currently only been tested with Bakta. Other tools may work, but please note that the pipeline expects CDSs not to overlap in a manner where order along the DNA sequence can't be determined easily - essentially, the edges of CDSs may overlap, but no more, for the pipeline to work as expected.
