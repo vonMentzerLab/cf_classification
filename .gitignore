@@ -1,4 +1,7 @@
 output
 demo/references/bakta_db
+demo/genomes/cds_features
+demo/genomes/contigs/bakta_parallel.log
+demo/references/*.dmnd
 old
 data
